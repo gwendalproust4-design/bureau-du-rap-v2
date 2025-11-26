@@ -8,7 +8,6 @@ export default function Login() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
-  // 1. NOUVEL ÉTAT pour gérer la visibilité
   const [showPassword, setShowPassword] = useState(false);
   
   const { login, register } = useAuth();

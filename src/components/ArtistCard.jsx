@@ -12,6 +12,17 @@ export default function ArtistCard({ rappeur, user, toggleFavorite, friendsFavs 
   if (friendFans.length === 1) friendLabel = `Favori de : ${friendFans[0]}`;
   else if (friendFans.length > 1) friendLabel = `Favori de plusieurs amis`;
 
+  const handleImageError = (e) => {
+    e.target.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(`
+      <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" fill="#1a1a1a"/>
+        <circle cx="100" cy="80" r="30" fill="#333"/>
+        <path d="M70 120 Q100 100 130 120 L130 160 L70 160 Z" fill="#333"/>
+        <text x="100" y="185" text-anchor="middle" fill="#666" font-size="12" font-family="Arial">🎤</text>
+      </svg>
+    `)))}`;
+  };
+
   return (
     <GlareHover
       className={`card ${rappeur.statut}`}
@@ -50,7 +61,7 @@ export default function ArtistCard({ rappeur, user, toggleFavorite, friendsFavs 
       )}
       
       <div className="card-image-wrapper">
-        <img src={rappeur.image} alt={rappeur.nom} className="card-image" />
+        <img src={rappeur.image} alt={rappeur.nom} className="card-image" onError={handleImageError} />
       </div>
       <div className="card-content">
         <div className="card-header">
