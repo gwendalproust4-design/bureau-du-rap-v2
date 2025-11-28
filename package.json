@@ -1,5 +1,6 @@
 {
   "name": "bureau-du-rap-v2",
+  "homepage": "https://gwendalproust4-design.github.io/bureau-du-rap-v2/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,6 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "preview:static": "npx http-server ./dist -p 8080 -c-1",
     "predeploy": "pnpm run build",
     "deploy": "gh-pages -d dist"
   },
@@ -35,3 +37,4 @@
     "vite": "^7.2.4"
   }
 }
+

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
 import { dataRappeurs } from './data';
 import GlareHover from './components/GlareHover'; // IMPORT
 
@@ -9,7 +9,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const [isEditing, setIsEditing] = useState(false);
+  // isEditing isn't currently used; remove to clear lint warning
   const [friendInput, setFriendInput] = useState("");
   const [friendMessage, setFriendMessage] = useState("");
   const [myFriendsList, setMyFriendsList] = useState([]);
@@ -23,7 +23,7 @@ export default function Profile() {
         }
     };
     loadFriends();
-  }, [user]);
+  }, [user, getFriendsDetails]);
 
   if (!user) { navigate('/login'); return null; }
 
@@ -35,7 +35,7 @@ export default function Profile() {
     if (file) {
         if (file.size > 500 * 1024) { setUploadError("L'image est trop lourde (Max 500ko)."); return; }
         const reader = new FileReader();
-        reader.onloadend = () => { updateUser({ avatar_url: reader.result }); setIsEditing(false); };
+        reader.onloadend = () => { updateUser({ avatar_url: reader.result }); };
         reader.readAsDataURL(file);
     }
   };

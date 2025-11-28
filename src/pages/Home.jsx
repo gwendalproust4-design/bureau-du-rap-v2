@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import Navbar from "../components/Navbar";
 import ArtistCard from "../components/ArtistCard";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../useAuth";
 import { dataRappeurs } from "../data";
 
-const Home = () => {
+const Home = ({ searchTerm }) => {
   const { user, toggleFavorite, friendsFavs = {} } = useAuth() || {};
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   const filteredRappeurs = dataRappeurs.filter(rappeur => {
@@ -22,12 +20,11 @@ const Home = () => {
 
   return (
     <div style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* NAVBAR SÉPARÉE */}
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      {/* Navbar is rendered globally in App.jsx */}
 
       <div className="container">
         <div className="hero">
-          <h1>LA DATA <span className="text-gradient">ULTIME</span></h1>
+          <h1>Bureau Du <span className="text-gradient">Rap</span></h1>
           <div className="filters-container" style={{ marginTop: '30px' }}>
             <button className={`filter-btn ${selectedStatus === 'all' ? 'active' : ''}`} onClick={() => setSelectedStatus('all')}>Tous</button>
             <button className={`filter-btn ${selectedStatus === 'legende' ? 'active' : ''}`} onClick={() => setSelectedStatus('legende')}>🏆 Légendes</button>

@@ -1,7 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from './supabaseClient';
-
-const AuthContext = createContext(null);
+import { AuthContext } from './AuthContextRef';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -9,6 +8,42 @@ export const AuthProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [friendsFavs, setFriendsFavs] = useState({});
   const [loading, setLoading] = useState(true);
+
+  // Move function declarations here to avoid accessing them before declaration
+  const fetchFriendsFavorites = useCallback(async (userId) => {
+    try {
+        const { data: links } = await supabase.from('friends').select('friend_id').eq('user_id', userId);
+        if (!links?.length) { setFriendsFavs({}); return; }
+        
+        const friendIds = links.map(f => f.friend_id);
+        const { data: profs } = await supabase.from('profiles').select('id, username').in('id', friendIds);
+        const names = {};
+        profs?.forEach(p => names[p.id] = p.username);
+
+        const { data: favs } = await supabase.from('favorites').select('artist_id, user_id').in('user_id', friendIds);
+        const map = {};
+        favs?.forEach(f => {
+            const n = names[f.user_id];
+            if (n) {
+                if (!map[f.artist_id]) map[f.artist_id] = [];
+                map[f.artist_id].push(n);
+            }
+        });
+        setFriendsFavs(map);
+    } catch { setFriendsFavs({}); }
+  }, []);
+
+  const fetchAllData = useCallback(async (userId) => {
+    try {
+      const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      if (profileData) setProfile(profileData);
+
+      const { data: favData } = await supabase.from('favorites').select('artist_id').eq('user_id', userId);
+      if (favData) setFavorites(favData.map(f => f.artist_id));
+
+      await fetchFriendsFavorites(userId);
+    } catch (err) { console.error(err); }
+  }, [fetchFriendsFavorites]);
 
   useEffect(() => {
     let mounted = true;
@@ -35,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     const timer = setTimeout(() => {
-      if (loading && mounted) {
+      if (mounted) {
         console.warn("Délai dépassé.");
         setLoading(false);
       }
@@ -44,44 +79,11 @@ export const AuthProvider = ({ children }) => {
     return () => {
       mounted = false;
       clearTimeout(timer);
-      authListener.subscription.unsubscribe();
+      authListener?.subscription?.unsubscribe();
     };
-  }, []);
+  }, [fetchAllData]);
 
-  const fetchAllData = async (userId) => {
-    try {
-      const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
-      if (profileData) setProfile(profileData);
-
-      const { data: favData } = await supabase.from('favorites').select('artist_id').eq('user_id', userId);
-      if (favData) setFavorites(favData.map(f => f.artist_id));
-
-      await fetchFriendsFavorites(userId);
-    } catch (e) { console.error(e); }
-  };
-
-  const fetchFriendsFavorites = async (userId) => {
-    try {
-        const { data: links } = await supabase.from('friends').select('friend_id').eq('user_id', userId);
-        if (!links?.length) { setFriendsFavs({}); return; }
-        
-        const friendIds = links.map(f => f.friend_id);
-        const { data: profs } = await supabase.from('profiles').select('id, username').in('id', friendIds);
-        const names = {};
-        profs?.forEach(p => names[p.id] = p.username);
-
-        const { data: favs } = await supabase.from('favorites').select('artist_id, user_id').in('user_id', friendIds);
-        const map = {};
-        favs?.forEach(f => {
-            const n = names[f.user_id];
-            if (n) {
-                if (!map[f.artist_id]) map[f.artist_id] = [];
-                map[f.artist_id].push(n);
-            }
-        });
-        setFriendsFavs(map);
-    } catch (e) { setFriendsFavs({}); }
-  };
+  
 
   // --- ACTIONS ---
   const login = async (email, password) => {
@@ -191,4 +193,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// `useAuth` is now in `src/useAuth.js` to support fast-refresh and keep this file exporting only components.

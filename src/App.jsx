@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from './AuthContext';
-import { dataRappeurs } from './data';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 import Home from './pages/Home';
 import ArtisteDetail from './ArtisteDetail';
 import Login from './Login';
 import Profile from './Profile';
 import Navbar from './components/Navbar';      
-import ArtistCard from './components/ArtistCard';
 import Spotlight from './components/Spotlight';
 import './index.css';
 
 
 export default function App() {
+  const [searchTerm, setSearchTerm] = useState('');
   return (
     <AuthProvider>
       <Spotlight />
-      <BrowserRouter>
+      <HashRouter>
+        <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profil" element={<Profile />} />
           <Route path="/artiste/:id" element={<ArtisteDetail />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
+
   );
 }
