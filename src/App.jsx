@@ -5,7 +5,9 @@ import Home from './pages/Home';
 import ArtisteDetail from './ArtisteDetail';
 import Login from './Login';
 import Profile from './Profile';
-import Navbar from './components/Navbar';      
+import NotFound from './pages/NotFound';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Spotlight from './components/Spotlight';
 import './index.css';
 
@@ -16,13 +18,19 @@ export default function App() {
     <AuthProvider>
       <Spotlight />
       <HashRouter>
-        <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <Routes>
-          <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profil" element={<Profile />} />
-          <Route path="/artiste/:id" element={<ArtisteDetail />} />
-        </Routes>
+        <div className="app-wrapper">
+          <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <div className="main-content">
+            <Routes>
+              <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/profil" element={<Profile />} />
+              <Route path="/artiste/:id" element={<ArtisteDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
       </HashRouter>
     </AuthProvider>
 

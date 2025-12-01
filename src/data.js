@@ -16,17 +16,17 @@ export const dataRappeurs = [
         bio: "Le Duc. Patron du 92i.",
         bioLongue: "Élie Yaffa, dit Booba. Pionnier du rap français, il a traversé les époques. Il a imposé l'autotune et le rap business en France.",
         albums: [
-            { 
-                titre: "ULTRA", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_ultra.jpg", 
-                tracks: ["GP", "Azerty", "RST", "Bonne journée", "Mona Lisa", "Je t'aime", "5G", "Vue sur la mer", "L'olivier", "VVV", "31", "Ultra", "Dernière fois", "Grain de sable"] 
+            {
+                titre: "ULTRA", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_ultra.jpg",
+                tracks: ["GP", "Azerty", "RST", "Bonne journée", "Mona Lisa", "Je t'aime", "5G", "Vue sur la mer", "L'olivier", "VVV", "31", "Ultra", "Dernière fois", "Grain de sable"]
             },
-            { 
-                titre: "Trône", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_trône.jpg", 
-                tracks: ["Centurion", "Friday", "Drapeau noir", "Trône", "Bouyon", "DKR", "Nougat", "Fleur de saison", "Terrain", "Petite fille", "Ça va aller", "113", "Ridin'", "Éléphant"] 
+            {
+                titre: "Trône", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_trône.jpg",
+                tracks: ["Centurion", "Friday", "Drapeau noir", "Trône", "Bouyon", "DKR", "Nougat", "Fleur de saison", "Terrain", "Petite fille", "Ça va aller", "113", "Ridin'", "Éléphant"]
             },
-            { 
-                titre: "Temps Mort", annee: "2002", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_temps_mort.jpg", 
-                tracks: ["Temps mort", "Ma définition", "Jusqu'ici tout va bien", "Repose en paix", "Le bitume avec une plume", "Animals", "Sans ratures", "Ecoute bien", "Inédit", "Strass et paillettes", "Destinée"] 
+            {
+                titre: "Temps Mort", annee: "2002", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/booba_temps_mort.jpg",
+                tracks: ["Temps mort", "Ma définition", "Jusqu'ici tout va bien", "Repose en paix", "Le bitume avec une plume", "Animals", "Sans ratures", "Ecoute bien", "Inédit", "Strass et paillettes", "Destinée"]
             }
         ]
     },
@@ -40,9 +40,9 @@ export const dataRappeurs = [
         chiffres: "500k Abonnés",
         bio: "Les architectes du rap marseillais.",
         albums: [
-            { 
-                titre: "L'École du Micro d'Argent", annee: "1997", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/iam_lecole_du_micro_dargent.jpg", 
-                tracks: ["L'école du micro d'argent", "Dangereux", "Nés sous la même étoile", "La saga", "Petit frère", "Elle donne son corps avant son nom", "L'empire du côté obscur", "Regarde", "Demain, c'est loin"] 
+            {
+                titre: "L'École du Micro d'Argent", annee: "1997", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/iam_lecole_du_micro_dargent.jpg",
+                tracks: ["L'école du micro d'argent", "Dangereux", "Nés sous la même étoile", "La saga", "Petit frère", "Elle donne son corps avant son nom", "L'empire du côté obscur", "Regarde", "Demain, c'est loin"]
             },
             { titre: "Ombre est lumière", annee: "1993", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/iam_ombre_est_lumière.jpg", tracks: ["Le feu", "Cosmos", "Vos dieux ont les mains sales", "Le mia", "Je danse le mia"] },
             { titre: "Arts Martiens", annee: "2013", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/iam_arts_martiens.jpg", tracks: ["Spartiate Spirit", "Les raisons de la colère", "Notre dame veille", "Benkei et Minamoto"] }
@@ -1199,6 +1199,155 @@ export const dataRappeurs = [
         bio: "Paraplégique.",
         albums: [
             { titre: "Paraplégique", annee: "2012", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/niro_paraplégique.jpg", tracks: ["Intro", "Paraplégique", "Dans ton kwaah", "Père fourra", "J'suis dans le truc", "On s'en remettra", "Ghetto Star", "Outro"] }
+        ]
+    },
+    {
+        id: "sch",
+        nom: "SCH",
+        statut: "tendance",
+        style: "Trap",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/sch.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "2.5M Abonnés",
+        bio: "Le S. Götze. Mathafack.",
+        albums: [
+            { titre: "JVLIVS II", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/sch_jvlivs_ii.jpg", tracks: ["Marché Noir", "Mannschaft", "Mode Akimbo", "Crack", "Loup Noir"] },
+            { titre: "JVLIVS", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/sch_jvlivs.jpg", tracks: ["Intro", "VNTM", "Pharmacie", "Otto", "Skydweller", "Facile", "Prêt à partir", "Mort de rire"] },
+            { titre: "A7", annee: "2015", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/sch_a7.jpg", tracks: ["A7", "Gomorra", "Liquide", "Champs-Élysées", "J'reviens de loin", "Fusil"] }
+        ]
+    },
+    {
+        id: "damso",
+        nom: "Damso",
+        statut: "tendance",
+        style: "Technique / Lyriciste",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/damso.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "3M Abonnés",
+        bio: "Dems. Vie.",
+        albums: [
+            { titre: "Ipséité", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/damso_ipséité.jpg", tracks: ["Nwaar Is The New Black", "Macarena", "Mosaïque Solitaire", "Signaler", "Kietu", "Gova", "J Respect R"] },
+            { titre: "Lithopédion", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/damso_lithopédion.jpg", tracks: ["Introduction", "Festival de rêves", "Baltringue", "Julien", "Silence", "Feu de bois", "Même issue", "Smog"] },
+            { titre: "QALF", annee: "2020", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/damso_qalf.jpg", tracks: ["MEVTR", "LIFE LIFE", "DEUX TOILES DE MER", "COEUR EN MIETTES", "POUR L'ARGENT", "BXL ZOO", "911", "SENTIMENTAL"] }
+        ]
+    },
+    {
+        id: "orelsan",
+        nom: "Orelsan",
+        statut: "legende",
+        style: "Technique / Lyriciste",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/orelsan.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "3.5M Abonnés",
+        bio: "Le patron de la fête est fini.",
+        albums: [
+            { titre: "Civilisation", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/orelsan_civilisation.jpg", tracks: ["La Quête", "Du propre", "Bébéboa", "Rêve mieux", "Seul avec du monde autour", "Manifeste", "L'odeur de l'essence", "Jour meilleur"] },
+            { titre: "La fête est finie", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/orelsan_la_fête_est_finie.jpg", tracks: ["San", "La fête est finie", "Basique", "Tout va bien", "Défaite de famille", "La pluie", "Paradis", "Notes pour trop tard"] },
+            { titre: "Le chant des sirènes", annee: "2011", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/orelsan_le_chant_des_sirènes.jpg", tracks: ["Raelsan", "Le chant des sirènes", "Plus rien ne m'étonne", "Mauvaise idée", "Double vie", "Finir mal", "Si seul", "Suicide social"] }
+        ]
+    },
+    {
+        id: "vald",
+        nom: "Vald",
+        statut: "confirmé",
+        style: "Technique / Lyriciste",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/vald.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "1.5M Abonnés",
+        bio: "Le V.",
+        albums: [
+            { titre: "XEU", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/vald_xeu.jpg", tracks: ["Primitif", "Seum", "Désaccordé", "Gris", "Réflexions basses", "Offshore", "Ne me déteste pas", "Deviens génial"] },
+            { titre: "Ce monde est cruel", annee: "2019", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/vald_ce_monde_est_cruel.jpg", tracks: ["Pocahontas", "Ce monde est cruel", "Pensionman", "Ma star", "Ignorant", "Halloween", "Dernier retrait", "Rappel"] },
+            { titre: "Agartha", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/vald_agartha.jpg", tracks: ["Acacia", "Megadeth", "Si j'arrêtais", "Je t'aime", "Totem", "L.D.S", "Ma meilleure amie", "Vitrine"] }
+        ]
+    },
+    {
+        id: "dinos",
+        nom: "Dinos",
+        statut: "confirmé",
+        style: "Technique / Lyriciste",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/dinos.webp",
+        certifications: { or: true, platine: true, diamant: false },
+        chiffres: "800k Abonnés",
+        bio: "L'Hiver à Paris.",
+        albums: [
+            { titre: "Stamina, Memento", annee: "2020", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/dinos_stamina_memento.jpg", tracks: ["Diptyque", "Moins un", "Paranoïaque", "Maman m'aime", "Prends soin de toi", "Je Wanda", "Césaire", "93 mesures"] },
+            { titre: "Imany", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/dinos_imany.jpg", tracks: ["Iceberg Slim", "Argentique", "Beuh et liqueurs", "Havana & Malibu", "Spleen", "Love", "Magnolia", "Les pleurs du mâle"] },
+            { titre: "Hiver à Paris", annee: "2022", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/dinos_hiver_à_paris.jpg", tracks: ["Rive Droite", "Porte de Paris", "Chrome Hearts", "Modus Vivendi", "Pichichi", "Ma Baby", "Quatre saisons", "L'univers ne nous voit pas danser"] }
+        ]
+    },
+    {
+        id: "josman",
+        nom: "Josman",
+        statut: "tendance",
+        style: "Trap",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/josman.webp",
+        certifications: { or: true, platine: true, diamant: false },
+        chiffres: "1M Abonnés",
+        bio: "J.O.S.",
+        albums: [
+            { titre: "M.A.N", annee: "2022", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/josman_man.jpg", tracks: ["Intro", "Pop", "L'occasion", "Fiesta", "Mort ce soir", "Brunes & Blondes", "Vaccin", "Ma Lady"] },
+            { titre: "J.O.$", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/josman_jos.jpg", tracks: ["Fais avec", "L'occasion", "Jeune N****", "Sourcils froncés", "Un zder, un thé", "V&V", "La cage", "XS"] },
+            { titre: "Split", annee: "2020", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/josman_split.jpg", tracks: ["L'éloignement", "Argent, Drogue & Sexe", "Bambi", "Je sais", "A l'aube", "Mauvaise humeur", "J'allume", "Si tu savais"] }
+        ]
+    },
+    {
+        id: "nekfeu",
+        nom: "Nekfeu",
+        statut: "legende",
+        style: "Technique / Lyriciste",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/nekfeu.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "2M Abonnés",
+        bio: "Le Fennec.",
+        albums: [
+            { titre: "Les Étoiles Vagabondes", annee: "2019", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/nekfeu_les_étoiles_vagabondes.jpg", tracks: ["Les étoiles vagabondes", "Alunissons", "Cheum", "Takotsubo", "Menteur menteur", "Ciel noir", "De mes cendres", "Elle pleut"] },
+            { titre: "Cyborg", annee: "2016", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/nekfeu_cyborg.jpg", tracks: ["Humanoïde", "Mauvaise graine", "Squa", "Réalité augmentée", "Avant tu riais", "Esquimaux", "O.D", "Saturne"] },
+            { titre: "Feu", annee: "2015", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/nekfeu_feu.jpg", tracks: ["Martin Eden", "Mon âme", "Le horla", "Nique les clones", "Rêve d'avoir des rêves", "Tempête", "Egérie", "On verra"] }
+        ]
+    },
+    {
+        id: "freezecorleone",
+        nom: "Freeze Corleone",
+        statut: "tendance",
+        style: "Drill",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/freeze_corleone.webp",
+        certifications: { or: true, platine: true, diamant: false },
+        chiffres: "1M Abonnés",
+        bio: "Chen Zen. 667.",
+        albums: [
+            { titre: "LMF", annee: "2020", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/freeze_corleone_lmf.jpg", tracks: ["Freeze Raël", "Hors Ligne", "Scellé Part. 2", "Tarkov", "Rap catéchisme", "Stretch 4", "Pas de refrain", "Chen Zen"] },
+            { titre: "L'Attaque des Clones", annee: "2023", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/freeze_corleone_lattaque_des_clones.jpg", tracks: ["Mwaka Moon", "Koussi Koussa", "God Knows", "I Wanna Be Loved", "Mode Avion", "Yen a vla", "Ivory", "Moments gâchés"] },
+            { titre: "Projet Blue Beam", annee: "2018", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/freeze_corleone_projet_blue_beam.jpg", tracks: ["Intro", "Jeremy Lin", "3 planètes", "Lester", "Fentanyl", "S/O Congo Part. 2", "Bâton rouge", "Sacrifice de masse"] }
+        ]
+    },
+    {
+        id: "ziak",
+        nom: "Ziak",
+        statut: "tendance",
+        style: "Drill",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/ziak.webp",
+        certifications: { or: true, platine: true, diamant: false },
+        chiffres: "600k Abonnés",
+        bio: "Akimbo.",
+        albums: [
+            { titre: "Akimbo", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/ziak_akimbo.jpg", tracks: ["Parasite", "La kiffance", "Akimbo", "Galerie", "Espace", "Vrai", "Rhum & Machette", "Prière"] },
+            { titre: "Chrome", annee: "2023", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/ziak_chrome.jpg", tracks: ["Démon", "Chrome", "Talon d'Achille", "Seul", "Même", "Pour une fois", "Rien", "Pistolero"] }
+        ]
+    },
+    {
+        id: "niska",
+        nom: "Niska",
+        statut: "tendance",
+        style: "Trap",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/niska.webp",
+        certifications: { or: true, platine: true, diamant: true },
+        chiffres: "3M Abonnés",
+        bio: "Charo. Méchant.",
+        albums: [
+            { titre: "Commando", annee: "2017", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/niska_commando.jpg", tracks: ["Story X", "Réseaux", "La Wewer", "Ah bon ?", "Medellin", "Salé", "Tuba Life", "Amour X"] },
+            { titre: "Mr Sal", annee: "2019", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/niska_mr_sal.jpg", tracks: ["Vrai", "Siliconé", "La zone est minée", "Bâtiment", "Mendoza", "Du lundi au lundi", "Tous les couler", "Mr Sal"] },
+            { titre: "Le monde est méchant", annee: "2021", cover: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/covers/niska_le_monde_est_méchant.jpg", tracks: ["Blue Magic", "44", "Jota", "Paramètre", "Journée", "140G", "T-Rain", "De bon matin"] }
         ]
     }
 ];
