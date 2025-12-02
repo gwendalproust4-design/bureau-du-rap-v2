@@ -9,8 +9,8 @@ import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Spotlight from './components/Spotlight';
+import ClickSpark from './components/ClickSpark';
 import './index.css';
-
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,21 +18,28 @@ export default function App() {
     <AuthProvider>
       <Spotlight />
       <HashRouter>
-        <div className="app-wrapper">
-          <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <div className="main-content">
-            <Routes>
-              <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/profil" element={<Profile />} />
-              <Route path="/artiste/:id" element={<ArtisteDetail />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+        <ClickSpark
+          sparkColor='#333333'
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+          <div className="app-wrapper">
+            <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            <div className="main-content">
+              <Routes>
+                <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/profil" element={<Profile />} />
+                <Route path="/artiste/:id" element={<ArtisteDetail />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        </ClickSpark>
       </HashRouter>
     </AuthProvider>
-
   );
 }
