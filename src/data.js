@@ -22612,7 +22612,7 @@ export const dataRappeurs = [
         nom: "Djadja & Dinaz",
         statut: "tendance",
         style: "Mélo / Club",
-        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/djadja_&_dinaz.webp",
+        image: "https://res.cloudinary.com/dtc457mbb/image/upload/v1763848125/bureau_du_rap/rappeurs/djadja_%26_dinaz.webp",
         chiffres: "1M Abonnés",
         bio: "Le duo de Meaux. Les rois de l'été.",
         bioLongue: "Djadja & Dinaz sont inséparables. Le duo de Meaux enchaîne les tubes et les albums de platine avec une régularité impressionnante. Leur recette : des mélodies autotunées, des textes sur la vie de quartier et une authenticité qui parle à toute une génération.",
