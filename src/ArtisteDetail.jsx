@@ -69,6 +69,109 @@ export default function ArtisteDetail() {
 
   if (!rappeur) return <div style={{ color: 'white', padding: '20px' }}>Artiste introuvable. <button onClick={() => navigate('/')}>Retour</button></div>;
 
+  // Categorize albums
+  const projects = rappeur.albums?.filter(a => !a.category || a.category === 'project').sort((a, b) => parseInt(b.annee) - parseInt(a.annee)) || [];
+  const singles = rappeur.albums?.filter(a => a.category === 'single').sort((a, b) => parseInt(b.annee) - parseInt(a.annee)) || [];
+  const appearances = rappeur.albums?.filter(a => a.category === 'feat').sort((a, b) => parseInt(b.annee) - parseInt(a.annee)) || [];
+
+  const renderAlbumCard = (album, index, globalIndex) => {
+    const isListened = listened?.includes(album.titre);
+    const userReview = reviews?.find(r => r.album_title === album.titre);
+
+    return (
+      <div key={globalIndex} className="album-card-container" style={{ background: 'var(--bg-card)', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
+        <div
+          onClick={() => toggleAlbum(globalIndex)}
+          className="album-card"
+          style={{ padding: '15px' }}
+        >
+          {album.cover && <img src={album.cover} alt={album.titre} className="album-cover" onError={handleImageError} />}
+          <div className="album-info">
+            <h3>{album.titre}</h3>
+            <span>{album.annee}</span>
+          </div>
+        </div>
+
+        {/* ACTIONS UTILISATEUR */}
+        {user && (
+          <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }} onClick={(e) => e.stopPropagation()}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-gray)' }}>
+              <input
+                type="checkbox"
+                checked={!!isListened}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  toggleListened(album.titre, rappeur.id);
+                }}
+                style={{ accentColor: 'var(--accent)' }}
+              />
+              Déjà écouté
+            </label>
+
+            {/* AVIS */}
+            {userReview ? (
+              <div style={{ marginTop: '10px', background: 'rgba(138, 43, 226, 0.1)', padding: '10px', borderRadius: '8px' }}>
+                <div style={{ color: '#FFD700' }}>{"★".repeat(userReview.rating)}{"☆".repeat(5 - userReview.rating)}</div>
+                <p style={{ margin: '5px 0 0', fontSize: '0.85rem', color: 'var(--text-white)' }}>"{userReview.comment}"</p>
+              </div>
+            ) : (
+              <div style={{ marginTop: '10px' }}>
+                <button
+                  onClick={() => setReviewForm(prev => ({ ...prev, albumTitle: album.titre }))}
+                  style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)', borderRadius: '4px', padding: '5px 10px', fontSize: '0.8rem', cursor: 'pointer' }}
+                >
+                  Noter l'album
+                </button>
+              </div>
+            )}
+
+            {/* FORMULAIRE AVIS */}
+            {reviewForm.albumTitle === album.titre && !userReview && (
+              <form onSubmit={(e) => handleReviewSubmit(e, album.titre)} style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <select
+                  value={reviewForm.rating}
+                  onChange={e => setReviewForm({ ...reviewForm, rating: parseInt(e.target.value) })}
+                  style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px' }}
+                >
+                  <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                  <option value="4">⭐⭐⭐⭐ (4)</option>
+                  <option value="3">⭐⭐⭐ (3)</option>
+                  <option value="2">⭐⭐ (2)</option>
+                  <option value="1">⭐ (1)</option>
+                </select>
+                <textarea
+                  placeholder="Votre avis..."
+                  value={reviewForm.comment}
+                  onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                  style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', minHeight: '60px' }}
+                  required
+                />
+                <div style={{ display: 'flex', gap: '5px' }}>
+                  <button type="submit" style={{ flex: 1, background: 'var(--accent)', color: 'white', border: 'none', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Envoyer</button>
+                  <button type="button" onClick={() => setReviewForm({ albumTitle: '', rating: 5, comment: '' })} style={{ background: 'transparent', color: 'var(--text-gray)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Annuler</button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Tracklist */}
+        {expandedAlbumIndex === globalIndex && album.tracks && (
+          <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }}>
+            <h5 style={{ color: 'var(--accent)', marginTop: '10px', marginBottom: '10px' }}>Tracklist</h5>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.9rem', color: 'var(--text-gray)' }}>
+              {album.tracks.map((track, i) => (
+                <li key={i} style={{ padding: '5px 0', borderBottom: '1px solid var(--glass-border)' }}>
+                  {i + 1}. {renderTrack(track)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '50px' }}>
       {/* Bouton Retour */}
@@ -106,106 +209,32 @@ export default function ArtisteDetail() {
       </div>
 
       <div className="disco-section">
-        <h2 className="section-title">Discographie</h2>
-        <div className="albums-grid">
-          {rappeur.albums?.map((album, index) => {
-            const isListened = listened?.includes(album.titre);
-            const userReview = reviews?.find(r => r.album_title === album.titre);
+        {projects.length > 0 && (
+          <>
+            <h2 className="section-title">Projets</h2>
+            <div className="albums-grid">
+              {projects.map((album, index) => renderAlbumCard(album, index, rappeur.albums.indexOf(album)))}
+            </div>
+          </>
+        )}
 
-            return (
-              <div key={index} className="album-card-container" style={{ background: 'var(--bg-card)', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
-                <div
-                  onClick={() => toggleAlbum(index)}
-                  className="album-card"
-                  style={{ padding: '15px' }}
-                >
-                  {album.cover && <img src={album.cover} alt={album.titre} className="album-cover" onError={handleImageError} />}
-                  <div className="album-info">
-                    <h3>{album.titre}</h3>
-                    <span>{album.annee}</span>
-                  </div>
-                </div>
+        {singles.length > 0 && (
+          <>
+            <h2 className="section-title" style={{ marginTop: '40px' }}>Singles</h2>
+            <div className="albums-grid">
+              {singles.map((album, index) => renderAlbumCard(album, index, rappeur.albums.indexOf(album)))}
+            </div>
+          </>
+        )}
 
-                {/* ACTIONS UTILISATEUR */}
-                {user && (
-                  <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }} onClick={(e) => e.stopPropagation()}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-gray)' }}>
-                      <input
-                        type="checkbox"
-                        checked={!!isListened}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          toggleListened(album.titre, rappeur.id);
-                        }}
-                        style={{ accentColor: 'var(--accent)' }}
-                      />
-                      Déjà écouté
-                    </label>
-
-                    {/* AVIS */}
-                    {userReview ? (
-                      <div style={{ marginTop: '10px', background: 'rgba(138, 43, 226, 0.1)', padding: '10px', borderRadius: '8px' }}>
-                        <div style={{ color: '#FFD700' }}>{"★".repeat(userReview.rating)}{"☆".repeat(5 - userReview.rating)}</div>
-                        <p style={{ margin: '5px 0 0', fontSize: '0.85rem', color: 'var(--text-white)' }}>"{userReview.comment}"</p>
-                      </div>
-                    ) : (
-                      <div style={{ marginTop: '10px' }}>
-                        <button
-                          onClick={() => setReviewForm(prev => ({ ...prev, albumTitle: album.titre }))}
-                          style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)', borderRadius: '4px', padding: '5px 10px', fontSize: '0.8rem', cursor: 'pointer' }}
-                        >
-                          Noter l'album
-                        </button>
-                      </div>
-                    )}
-
-                    {/* FORMULAIRE AVIS */}
-                    {reviewForm.albumTitle === album.titre && !userReview && (
-                      <form onSubmit={(e) => handleReviewSubmit(e, album.titre)} style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        <select
-                          value={reviewForm.rating}
-                          onChange={e => setReviewForm({ ...reviewForm, rating: parseInt(e.target.value) })}
-                          style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px' }}
-                        >
-                          <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                          <option value="4">⭐⭐⭐⭐ (4)</option>
-                          <option value="3">⭐⭐⭐ (3)</option>
-                          <option value="2">⭐⭐ (2)</option>
-                          <option value="1">⭐ (1)</option>
-                        </select>
-                        <textarea
-                          placeholder="Votre avis..."
-                          value={reviewForm.comment}
-                          onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                          style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', minHeight: '60px' }}
-                          required
-                        />
-                        <div style={{ display: 'flex', gap: '5px' }}>
-                          <button type="submit" style={{ flex: 1, background: 'var(--accent)', color: 'white', border: 'none', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Envoyer</button>
-                          <button type="button" onClick={() => setReviewForm({ albumTitle: '', rating: 5, comment: '' })} style={{ background: 'transparent', color: 'var(--text-gray)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Annuler</button>
-                        </div>
-                      </form>
-                    )}
-                  </div>
-                )}
-
-                {/* Tracklist */}
-                {expandedAlbumIndex === index && album.tracks && (
-                  <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }}>
-                    <h5 style={{ color: 'var(--accent)', marginTop: '10px', marginBottom: '10px' }}>Tracklist</h5>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.9rem', color: 'var(--text-gray)' }}>
-                      {album.tracks.map((track, i) => (
-                        <li key={i} style={{ padding: '5px 0', borderBottom: '1px solid var(--glass-border)' }}>
-                          {i + 1}. {renderTrack(track)}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {appearances.length > 0 && (
+          <>
+            <h2 className="section-title" style={{ marginTop: '40px' }}>Apparitions</h2>
+            <div className="albums-grid">
+              {appearances.map((album, index) => renderAlbumCard(album, index, rappeur.albums.indexOf(album)))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

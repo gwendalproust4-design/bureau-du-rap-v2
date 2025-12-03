@@ -11,9 +11,9 @@ const Home = ({ searchTerm }) => {
     const matchSearch = rappeur.nom.toLowerCase().includes(searchTerm.toLowerCase());
     let matchStatus = true;
     if (selectedStatus === "favorites") {
-        matchStatus = user && user.favorites && user.favorites.includes(rappeur.id);
+      matchStatus = user && user.favorites && user.favorites.includes(rappeur.id);
     } else if (selectedStatus !== "all") {
-        matchStatus = rappeur.statut === selectedStatus;
+      matchStatus = rappeur.statut === selectedStatus;
     }
     return matchSearch && matchStatus;
   });
@@ -30,19 +30,19 @@ const Home = ({ searchTerm }) => {
             <button className={`filter-btn ${selectedStatus === 'legende' ? 'active' : ''}`} onClick={() => setSelectedStatus('legende')}>🏆 Légendes</button>
             <button className={`filter-btn ${selectedStatus === 'tendance' ? 'active' : ''}`} onClick={() => setSelectedStatus('tendance')}>🔥 Tendances</button>
             <button className={`filter-btn ${selectedStatus === 'pepite' ? 'active' : ''}`} onClick={() => setSelectedStatus('pepite')}>💎 Pépites</button>
-            {user && <button className={`filter-btn ${selectedStatus === 'favorites' ? 'active' : ''}`} onClick={() => setSelectedStatus('favorites')} style={{borderColor: '#ff3b3b', color: selectedStatus === 'favorites' ? 'white' : '#ff3b3b'}}>❤️ Favoris</button>}
+            {user && <button className={`filter-btn ${selectedStatus === 'favorites' ? 'active' : ''}`} onClick={() => setSelectedStatus('favorites')} style={{ borderColor: '#ff3b3b', color: selectedStatus === 'favorites' ? 'white' : '#ff3b3b' }}>❤️ Favoris</button>}
           </div>
         </div>
 
         <div className="grid">
           {filteredRappeurs.map((rappeur) => (
             // CARTE ARTISTE SÉPARÉE
-            <ArtistCard 
-              key={rappeur.id} 
-              rappeur={rappeur} 
-              user={user} 
-              toggleFavorite={toggleFavorite} 
-              friendsFavs={friendsFavs} 
+            <ArtistCard
+              key={rappeur.id}
+              rappeur={rappeur}
+              user={user}
+              toggleFavorite={toggleFavorite}
+              friendsFavs={friendsFavs}
             />
           ))}
         </div>
