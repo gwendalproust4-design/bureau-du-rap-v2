@@ -1,0 +1,121 @@
+# Liste des Rappeurs
+
+- Booba ✅
+- IAM ✅
+- Suprême NTM ✅
+- Kaaris ✅
+- Rohff ✅
+- MC Solaar ✅
+- Sexion d ✅
+- Gazo ✅
+- Tiakola ✅
+- Werenoi ✅
+- SDM ✅
+- PLK ✅
+- Jul ✅
+- Ninho ✅
+- Hamza ✅
+- Yamê ✅
+- Favé ✅
+- Houdi ✅
+- La Mano 1.9 ✅
+- Kerchak ✅
+- Timal ✅
+- Zola ✅
+- La Fève ✅
+- Alpha Wann ✅
+- Laylow ✅
+- Luther ✅
+- H JeuneCrack ✅
+- Mairo ✅
+- Khali ✅
+- So La Lune ✅
+- Prince Waly ✅
+- Benjamin Epps ✅
+- Hugo TSR ✅
+- Demi Portion ✅
+- Souffrance ✅
+- Isha ✅
+- Limsa d ✅
+- Furax Barbarossa ✅
+- Jazzy Bazz ✅
+- Georgio ✅
+- Zamdane ✅
+- Lujipeka ✅
+- 100 Blaze ✅
+- 404Billy ✅
+- Keeqaid ✅
+- Didi Trix ✅
+- Jungle Jack ✅
+- Maureen ✅
+- Green Montana ✅
+- Larry ✅
+- Kpri ✅
+- 3010 ✅
+- 1D1R ✅
+- 63OG ✅
+- 8ruki ✅
+- Abou Debeing ✅
+- Akhenaton ✅
+- TKS 2G ✅
+- Winnterzuko ✅
+- 1PLIKÉ140 ✅
+- Alkpote ✅
+- Ashe 22 ✅
+- Bramsito ✅
+- Bushi ✅
+- Captaine Roshi ✅
+- Cavalier ✅
+- Coelho ✅
+- Dajak ✅
+- Dau ✅
+- Disiz ✅
+- Djadja & Dinaz ✅
+- Dosseh ✅
+- Doums ✅
+- Edge ✅
+- ElGrandeToto ✅
+- Fianso 🚀 (Start)
+- Fresh ⏳
+- Gradur ⏳
+- Guy2Bezbar ⏳
+- Heuss L ⏳
+- Jok ⏳
+- Kalash ⏳
+- Kalash Criminel ⏳
+- Lacrim ⏳
+- Lefa ⏳
+- Lomepal ⏳
+- Lorenzo ⏳
+- Maes ⏳
+- MHD ⏳
+- Mister V ⏳
+- Niro ⏳
+- SCH ⏳
+- Damso ⏳
+- Orelsan ⏳
+- Vald ⏳
+- Dinos ⏳
+- Josman ⏳
+- Nekfeu ⏳
+- Freeze Corleone ⏳
+- Ziak ⏳
+- Niska ⏳
+- JSX ⏳
+- Elia ⏳
+- Dala ⏳
+- Kofs ⏳
+- Naps ⏳
+- Soso Maness ⏳
+- Elams ⏳
+- Solda ⏳
+- Houari ⏳
+- Lord Kossity ⏳
+- Rsko ⏳
+- Aya Nakamura ⏳
+- Nemir ⏳
+- 13 Block ⏳
+- Blacko ⏳
+- Alonzo ⏳
+- Ashe 22 ⏳
+- Hornet La Frappe ⏳

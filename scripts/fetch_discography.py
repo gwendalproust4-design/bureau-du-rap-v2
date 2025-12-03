@@ -84,7 +84,12 @@ def fetch_spotify_discography(artist_name):
             album_group = item.get('album_group', '')
             album_type = item.get('album_type', '')
             
+            primary_artist_id = item['artists'][0]['id'] if item['artists'] else None
+            
             if album_group == 'appears_on':
+                category = 'feat'
+            elif primary_artist_id and primary_artist_id != artist_id:
+                # If the artist is not the primary artist, it's an appearance
                 category = 'feat'
             elif album_type == 'single':
                 category = 'single'
@@ -247,7 +252,7 @@ def main():
     rappers = get_rappers_from_data(DATA_FILE)
     print(f"Found {len(rappers)} rappers in data.js")
     
-    start_from = None # Process all artists
+    start_from = "Fianso" # Process from Fianso onwards
     found_start = False
     
     for rapper in rappers:
