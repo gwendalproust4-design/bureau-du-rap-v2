@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { dataRappeurs } from './data'; // On importe la base de données
+import { dataRappeurs } from './data';
+import { useAuth } from './useAuth';
 
 export default function ArtisteDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [expandedAlbumIndex, setExpandedAlbumIndex] = useState(null);
 
-  // On cherche le bon rappeur
+  // Local state for review form
+  const [reviewForm, setReviewForm] = useState({ albumTitle: '', rating: 5, comment: '' });
+
   const rappeur = dataRappeurs.find(r => r.id === id);
+  const { user, toggleFavorite, listened = [], reviews = [], toggleListened, addReview } = useAuth() || {};
+  const isFavorite = user?.favorites?.includes(id);
 
   const handleImageError = (e) => {
     e.target.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(`
@@ -25,18 +30,18 @@ export default function ArtisteDetail() {
     setExpandedAlbumIndex(expandedAlbumIndex === index ? null : index);
   };
 
-  const renderTrack = (track) => {
-    // Regex pour capturer "Titre (feat. Artiste)"
-    const match = track.match(/^(.*?)\s*\(feat\.\s*(.*?)\)$/i);
+  const handleReviewSubmit = async (e, albumTitle) => {
+    e.preventDefault();
+    await addReview(albumTitle, rappeur.id, reviewForm.rating, reviewForm.comment);
+    setReviewForm({ albumTitle: '', rating: 5, comment: '' }); // Reset form
+  };
 
+  const renderTrack = (track) => {
+    const match = track.match(/^(.*?)\s*\(feat\.\s*(.*?)\)$/i);
     if (match) {
       const title = match[1];
       const featName = match[2];
-
-      // Chercher l'artiste en featuring dans la base de données (par nom exact ou id approximatif)
-      // On normalise pour la recherche (minuscule, sans accents)
       const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
       const featArtist = dataRappeurs.find(r =>
         normalize(r.nom) === normalize(featName) ||
         r.id === normalize(featName).replace(/\s+/g, '_')
@@ -65,57 +70,141 @@ export default function ArtisteDetail() {
   if (!rappeur) return <div style={{ color: 'white', padding: '20px' }}>Artiste introuvable. <button onClick={() => navigate('/')}>Retour</button></div>;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#050505', color: 'white', paddingBottom: '50px' }}>
+    <div style={{ minHeight: '100vh', paddingBottom: '50px' }}>
       {/* Bouton Retour */}
       <button
         onClick={() => navigate('/')}
-        style={{ position: 'fixed', top: 20, left: 20, zIndex: 100, padding: '10px 20px', borderRadius: '30px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', color: 'white', backdropFilter: 'blur(10px)' }}>
+        className="back-btn">
         ← Retour
       </button>
 
       {/* En-tête */}
-      <div style={{ height: '60vh', position: 'relative' }}>
-        <img src={rappeur.image} alt={rappeur.nom} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }} onError={handleImageError} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, padding: '40px' }}>
-          <h1 style={{ fontSize: '4rem', margin: 0 }}>{rappeur.nom}</h1>
-          <span style={{ background: '#8A2BE2', padding: '5px 15px', borderRadius: '5px', fontWeight: 'bold' }}>{rappeur.style}</span>
+      <div className="artist-header" style={{ backgroundImage: `url(${rappeur.image})` }}>
+        <div className="artist-info">
+          <h1 className="artist-name">{rappeur.nom}</h1>
+          <div className="artist-meta">
+            <span className="tag-style">{rappeur.style}</span>
+            {user && (
+              <button
+                onClick={() => toggleFavorite(rappeur.id)}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '2rem',
+                  filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))'
+                }}
+                title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              >
+                {isFavorite ? '❤️' : '🤍'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Bio & Albums */}
-      <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
-        <p style={{ fontSize: '1.2rem', lineHeight: '1.6', color: '#ccc' }}>{rappeur.bioLongue || rappeur.bio}</p>
+      <div className="bio-section">
+        <p>{rappeur.bioLongue || rappeur.bio}</p>
+      </div>
 
-        <h2 style={{ borderLeft: '4px solid #8A2BE2', paddingLeft: '15px', marginTop: '50px' }}>Discographie</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '30px', marginTop: '20px' }}>
-          {rappeur.albums?.map((album, index) => (
-            <div key={index} style={{ background: '#111', borderRadius: '10px', overflow: 'hidden', transition: 'transform 0.2s' }}>
-              <div
-                onClick={() => toggleAlbum(index)}
-                style={{ cursor: 'pointer', position: 'relative' }}
-              >
-                {album.cover && <img src={album.cover} alt={album.titre} style={{ width: '100%', display: 'block' }} onError={handleImageError} />}
-                <div style={{ padding: '15px' }}>
-                  <h4 style={{ margin: '0 0 5px', fontSize: '1.1rem' }}>{album.titre}</h4>
-                  <span style={{ color: '#666', fontSize: '0.9rem' }}>{album.annee}</span>
+      <div className="disco-section">
+        <h2 className="section-title">Discographie</h2>
+        <div className="albums-grid">
+          {rappeur.albums?.map((album, index) => {
+            const isListened = listened?.includes(album.titre);
+            const userReview = reviews?.find(r => r.album_title === album.titre);
+
+            return (
+              <div key={index} className="album-card-container" style={{ background: 'var(--bg-card)', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
+                <div
+                  onClick={() => toggleAlbum(index)}
+                  className="album-card"
+                  style={{ padding: '15px' }}
+                >
+                  {album.cover && <img src={album.cover} alt={album.titre} className="album-cover" onError={handleImageError} />}
+                  <div className="album-info">
+                    <h3>{album.titre}</h3>
+                    <span>{album.annee}</span>
+                  </div>
                 </div>
+
+                {/* ACTIONS UTILISATEUR */}
+                {user && (
+                  <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }} onClick={(e) => e.stopPropagation()}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-gray)' }}>
+                      <input
+                        type="checkbox"
+                        checked={!!isListened}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          toggleListened(album.titre, rappeur.id);
+                        }}
+                        style={{ accentColor: 'var(--accent)' }}
+                      />
+                      Déjà écouté
+                    </label>
+
+                    {/* AVIS */}
+                    {userReview ? (
+                      <div style={{ marginTop: '10px', background: 'rgba(138, 43, 226, 0.1)', padding: '10px', borderRadius: '8px' }}>
+                        <div style={{ color: '#FFD700' }}>{"★".repeat(userReview.rating)}{"☆".repeat(5 - userReview.rating)}</div>
+                        <p style={{ margin: '5px 0 0', fontSize: '0.85rem', color: 'var(--text-white)' }}>"{userReview.comment}"</p>
+                      </div>
+                    ) : (
+                      <div style={{ marginTop: '10px' }}>
+                        <button
+                          onClick={() => setReviewForm(prev => ({ ...prev, albumTitle: album.titre }))}
+                          style={{ background: 'transparent', border: '1px solid var(--accent)', color: 'var(--accent)', borderRadius: '4px', padding: '5px 10px', fontSize: '0.8rem', cursor: 'pointer' }}
+                        >
+                          Noter l'album
+                        </button>
+                      </div>
+                    )}
+
+                    {/* FORMULAIRE AVIS */}
+                    {reviewForm.albumTitle === album.titre && !userReview && (
+                      <form onSubmit={(e) => handleReviewSubmit(e, album.titre)} style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        <select
+                          value={reviewForm.rating}
+                          onChange={e => setReviewForm({ ...reviewForm, rating: parseInt(e.target.value) })}
+                          style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px' }}
+                        >
+                          <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                          <option value="4">⭐⭐⭐⭐ (4)</option>
+                          <option value="3">⭐⭐⭐ (3)</option>
+                          <option value="2">⭐⭐ (2)</option>
+                          <option value="1">⭐ (1)</option>
+                        </select>
+                        <textarea
+                          placeholder="Votre avis..."
+                          value={reviewForm.comment}
+                          onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                          style={{ background: 'var(--bg-dark)', color: 'var(--text-white)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', minHeight: '60px' }}
+                          required
+                        />
+                        <div style={{ display: 'flex', gap: '5px' }}>
+                          <button type="submit" style={{ flex: 1, background: 'var(--accent)', color: 'white', border: 'none', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Envoyer</button>
+                          <button type="button" onClick={() => setReviewForm({ albumTitle: '', rating: 5, comment: '' })} style={{ background: 'transparent', color: 'var(--text-gray)', border: '1px solid var(--glass-border)', padding: '5px', borderRadius: '4px', cursor: 'pointer' }}>Annuler</button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+
+                {/* Tracklist */}
+                {expandedAlbumIndex === index && album.tracks && (
+                  <div style={{ padding: '0 15px 15px', borderTop: '1px solid var(--glass-border)' }}>
+                    <h5 style={{ color: 'var(--accent)', marginTop: '10px', marginBottom: '10px' }}>Tracklist</h5>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.9rem', color: 'var(--text-gray)' }}>
+                      {album.tracks.map((track, i) => (
+                        <li key={i} style={{ padding: '5px 0', borderBottom: '1px solid var(--glass-border)' }}>
+                          {i + 1}. {renderTrack(track)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-
-              {/* Tracklist */}
-              {expandedAlbumIndex === index && album.tracks && (
-                <div style={{ padding: '0 15px 15px', borderTop: '1px solid #222' }}>
-                  <h5 style={{ color: '#8A2BE2', marginTop: '10px', marginBottom: '10px' }}>Tracklist</h5>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.9rem', color: '#ddd' }}>
-                    {album.tracks.map((track, i) => (
-                      <li key={i} style={{ padding: '5px 0', borderBottom: '1px solid #222' }}>
-                        {i + 1}. {renderTrack(track)}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

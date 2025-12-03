@@ -13,17 +13,34 @@ if (SUPABASE_URL && SUPABASE_KEY) {
 	console.warn('VITE_SUPABASE_URL or VITE_SUPABASE_KEY is missing — using a safe mock for supabase client. Provide env vars to enable full backend features.');
 
 	const noopPromise = async (value = { data: null, error: null }) => value;
-	const chainable = () => ({ select: () => Promise.resolve({ data: [] }), insert: noopPromise, update: noopPromise, delete: noopPromise, eq: () => chainable(), in: () => chainable(), ilike: () => chainable() });
+
+	// Mock builder that supports chaining and is thenable
+	const createMockBuilder = (defaultData = []) => {
+		const builder = {
+			select: () => builder,
+			insert: () => Promise.resolve({ data: null, error: null }),
+			update: () => Promise.resolve({ data: null, error: null }),
+			delete: () => Promise.resolve({ data: null, error: null }),
+			eq: () => builder,
+			in: () => builder,
+			ilike: () => builder,
+			single: () => Promise.resolve({ data: null, error: null }),
+			maybeSingle: () => Promise.resolve({ data: null, error: null }),
+			// Make it thenable so it can be awaited
+			then: (resolve) => resolve({ data: defaultData, error: null })
+		};
+		return builder;
+	};
 
 	supabase = {
 		auth: {
 			getSession: async () => ({ data: { session: null } }),
-			onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-			signInWithPassword: async () => ({ error: { message: 'Supabase not configured' } }),
-			signUp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+			onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+			signInWithPassword: async () => ({ error: { message: 'Supabase keys missing in .env' } }),
+			signUp: async () => ({ data: null, error: { message: 'Supabase keys missing in .env' } }),
 			signOut: async () => ({ data: null }),
 		},
-		from: (/* table */) => chainable(),
+		from: (/* table */) => createMockBuilder(),
 	};
 }
 

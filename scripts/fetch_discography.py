@@ -237,7 +237,17 @@ def main():
     rappers = get_rappers_from_data(DATA_FILE)
     print(f"Found {len(rappers)} rappers in data.js")
     
+    start_from = "Favé" # Hardcoded for now based on user request, or could be arg
+    found_start = False
+    
     for rapper in rappers:
+        if start_from and not found_start:
+            if rapper['name'].lower() == start_from.lower():
+                found_start = True
+            else:
+                # print(f"Skipping {rapper['name']} (before start_from)")
+                continue
+                
         print(f"\nProcessing {rapper['name']} ({rapper['id']})...")
         new_albums = fetch_spotify_discography(rapper['name'])
         
