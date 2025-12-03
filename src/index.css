@@ -1559,3 +1559,129 @@ input:checked+.slider:before {
     font-size: 0.9rem;
   }
 }
+
+
+/* --- LOGIN PAGE STYLES --- */
+.login-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(25px);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideInBottom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+  font-family: var(--font-main);
+  font-weight: 600;
+}
+
+.auth-tab.active {
+  color: white;
+  border-bottom: 2px solid #8A2BE2;
+}
+
+.input-field-container {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+.login-input:focus {
+  border-color: #8A2BE2;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+}
+
+.action-btn {
+  width: 100%;
+  padding: 12px;
+  background: #8A2BE2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.action-btn:hover {
+  background: #a960ee;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+}
+
+.divider {
+  margin: 20px 0;
+  position: relative;
+  text-align: center;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.divider span {
+  background: #1a1a1a; /* Fallback if transparent */
+  padding: 0 10px;
+  color: #666;
+  font-size: 0.8rem;
+  position: relative;
+  z-index: 1;
+}
+
+.visitor-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ccc;
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.visitor-btn:hover {
+  border-color: white;
+  color: white;
+}
