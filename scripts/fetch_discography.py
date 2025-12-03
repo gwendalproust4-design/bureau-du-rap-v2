@@ -73,17 +73,24 @@ def fetch_spotify_discography(artist_name):
     limit = 50
     
     while True:
-        results = sp.artist_albums(artist_id, album_type='album,single', limit=limit, offset=offset)
+        # Fetch albums, singles, and appearances
+        results = sp.artist_albums(artist_id, album_type='album,single,appears_on', limit=limit, offset=offset)
         items = results['items']
         if not items:
             break
         
         for item in items:
-            # Filter out duplicates based on name (simple normalization)
-            # Spotify often has "Album Name" and "Album Name (Deluxe)" or explicit/clean versions
-            # For now, we take everything, but maybe we can deduplicate by exact name?
-            # User said "liste non exhaustive" but "rajoute tout". Let's keep it broad.
+            # Determine category
+            album_group = item.get('album_group', '')
+            album_type = item.get('album_type', '')
             
+            if album_group == 'appears_on':
+                category = 'feat'
+            elif album_type == 'single':
+                category = 'single'
+            else:
+                category = 'project'
+
             # Get high res cover
             cover_url = item['images'][0]['url'] if item['images'] else ""
             
@@ -92,7 +99,8 @@ def fetch_spotify_discography(artist_name):
                 'title': item['name'],
                 'year': item['release_date'][:4],
                 'cover': cover_url,
-                'type': item['album_type'],
+                'type': album_type,
+                'category': category,
                 'release_date': item['release_date'] # For sorting
             })
         
@@ -104,7 +112,7 @@ def fetch_spotify_discography(artist_name):
     # Sort by release date (newest first)
     albums_data.sort(key=lambda x: x['release_date'], reverse=True)
     
-    # Deduplicate by title (keep first/newest) to avoid spamming "Single" vs "Album" versions
+    # Deduplicate by title (keep first/newest)
     seen_titles = set()
     unique_albums = []
     for alb in albums_data:
@@ -119,12 +127,14 @@ def fetch_spotify_discography(artist_name):
     # 3. Fetch Tracks for each album
     final_albums = []
     for alb in unique_albums:
-        time.sleep(0.5) # Rate limiting between albums
-        print(f"    -> Fetching tracks for: {alb['title']}")
+        time.sleep(0.2) # Rate limiting
+        # print(f"    -> Fetching tracks for: {alb['title']}")
         tracks = []
         
         # Handle pagination for tracks
         t_offset = 0
+        has_relevant_tracks = False # For appears_on, check if artist is actually on it
+
         while True:
             t_results = sp.album_tracks(alb['id'], limit=50, offset=t_offset)
             t_items = t_results['items']
@@ -133,16 +143,19 @@ def fetch_spotify_discography(artist_name):
                 
             for t in t_items:
                 track_name = t['name']
-                # Handle featurings
-                artists = [a['name'] for a in t['artists']]
-                # Remove main artist from list if present (usually is)
-                # But sometimes main artist is not first? 
-                # Let's just check if there are multiple artists
-                feats = [a for a in artists if a.lower() != artist_name.lower()]
+                track_artists = [a['name'] for a in t['artists']]
+                track_artist_ids = [a['id'] for a in t['artists']]
                 
+                # For 'appears_on', only keep tracks where artist is present
+                if alb['category'] == 'feat':
+                    if artist_id not in track_artist_ids:
+                        continue
+                    has_relevant_tracks = True
+                
+                # Handle featurings string
+                feats = [a for a in track_artists if a.lower() != artist_name.lower()]
                 if feats:
                     feat_str = ", ".join(feats)
-                    # Check if "(feat." is already in title
                     if "(feat." not in track_name.lower():
                          track_name = f"{track_name} (feat. {feat_str})"
                 
@@ -151,14 +164,19 @@ def fetch_spotify_discography(artist_name):
             t_offset += 50
             if not t_results['next']:
                 break
-            time.sleep(1) # Rate limiting
         
-        final_albums.append({
-            'titre': alb['title'],
-            'annee': alb['year'],
-            'cover': alb['cover'],
-            'tracks': tracks
-        })
+        # If it's a feat album but we found no tracks with the artist, skip it
+        if alb['category'] == 'feat' and not has_relevant_tracks:
+            continue
+
+        if tracks: # Only add if there are tracks
+            final_albums.append({
+                'titre': alb['title'],
+                'annee': alb['year'],
+                'cover': alb['cover'],
+                'category': alb['category'],
+                'tracks': tracks
+            })
         
     return final_albums
 
@@ -167,11 +185,6 @@ def update_data_file(filepath, rapper_id, new_albums):
         content = f.read()
 
     # 1. Find the rapper block
-    # We look for the id: "rapper_id"
-    # Then we look for the "albums: [" following it
-    
-    # Regex to find the start of the albums array for this specific rapper
-    # We match the rapper ID, then any content until "albums:", then "["
     pattern = re.compile(r'(id:\s*["\']' + re.escape(rapper_id) + r'["\'].*?albums:\s*)\[', re.DOTALL)
     match = pattern.search(content)
     
@@ -182,7 +195,6 @@ def update_data_file(filepath, rapper_id, new_albums):
     start_index = match.end() - 1 # Points to '['
     
     # 2. Find the matching closing bracket ']'
-    # We need to parse nested brackets because tracks are arrays too
     balance = 0
     end_index = -1
     
@@ -201,18 +213,16 @@ def update_data_file(filepath, rapper_id, new_albums):
         return False
 
     # 3. Generate new JS code for albums
-    # We manually format to match the style
     js_albums = "[\n"
     for alb in new_albums:
-        # Escape quotes in strings
         safe_title = alb['titre'].replace('"', '\\"')
         safe_cover = alb['cover']
+        category = alb.get('category', 'project')
         
         js_albums += "            {\n"
-        js_albums += f'                titre: "{safe_title}", annee: "{alb["annee"]}", cover: "{safe_cover}",\n'
+        js_albums += f'                titre: "{safe_title}", annee: "{alb["annee"]}", cover: "{safe_cover}", category: "{category}",\n'
         
         js_albums += "                tracks: ["
-        # Format tracks
         track_strs = []
         for t in alb['tracks']:
             safe_track = t.replace('"', '\\"')
@@ -237,7 +247,7 @@ def main():
     rappers = get_rappers_from_data(DATA_FILE)
     print(f"Found {len(rappers)} rappers in data.js")
     
-    start_from = "Favé" # Hardcoded for now based on user request, or could be arg
+    start_from = None # Process all artists
     found_start = False
     
     for rapper in rappers:
