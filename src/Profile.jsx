@@ -91,6 +91,19 @@ export default function Profile() {
       </div>
 
       <div style={{ marginBottom: '60px' }}>
+        <h2 style={{ color: 'white', borderBottom: '1px solid #333', paddingBottom: '10px' }}>MES ALBUMS ÉCOUTÉS <span style={{ color: '#8A2BE2' }}>({user.listened?.length || 0})</span></h2>
+        {user.listened && user.listened.length > 0 ? (
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: '20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
+            {user.listened.map((album, i) => (
+              <li key={i} style={{ background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '8px', color: '#ccc', border: '1px solid rgba(255,255,255,0.05)' }}>
+                💿 {album}
+              </li>
+            ))}
+          </ul>
+        ) : <p style={{ color: '#666', marginTop: '20px' }}>Aucun album marqué comme écouté.</p>}
+      </div>
+
+      <div style={{ marginBottom: '60px' }}>
         <h2 style={{ color: 'white', borderBottom: '1px solid #333', paddingBottom: '10px' }}>MES AVIS <span style={{ color: '#8A2BE2' }}>({user.reviews?.length || 0})</span></h2>
         {user.reviews && user.reviews.length > 0 ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px', marginTop: '30px' }}>
