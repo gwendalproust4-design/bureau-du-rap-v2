@@ -8,6 +8,8 @@ import Login from './Login';
 import Profile from './Profile';
 import FriendProfile from './pages/FriendProfile';
 import NotFound from './pages/NotFound';
+import Game from './pages/Game';
+import Leaderboard from './pages/Leaderboard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Spotlight from './components/Spotlight';
@@ -38,6 +40,8 @@ export default function App() {
                   <Route path="/profil" element={<Profile />} />
                   <Route path="/profile/:id" element={<FriendProfile />} />
                   <Route path="/artiste/:id" element={<ArtisteDetail />} />
+                  <Route path="/game" element={<Game />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/debug" element={<DebugSupabase />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

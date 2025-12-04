@@ -65,6 +65,13 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
         </div>
 
         <div className="nav-right">
+          <button className="nav-link-btn" onClick={() => navigate('/game')} style={{ marginRight: '10px', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 'bold' }}>
+            🎮 Mini-Jeu
+          </button>
+          {/* <button className="nav-link-btn" onClick={() => navigate('/leaderboard')} style={{ marginRight: '10px', background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 'bold' }}>
+            🏆 Classement
+          </button> */}
+
           <label className="theme-switch" title={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}>
             <input type="checkbox" checked={theme === 'light'} onChange={toggleTheme} />
             <span className="slider"></span>
