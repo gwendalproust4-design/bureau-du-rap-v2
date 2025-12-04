@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Spotlight from './components/Spotlight';
 import ClickSpark from './components/ClickSpark';
+import DebugSupabase from './DebugSupabase';
 import './index.css';
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
                   <Route path="/profil" element={<Profile />} />
                   <Route path="/profile/:id" element={<FriendProfile />} />
                   <Route path="/artiste/:id" element={<ArtisteDetail />} />
+                  <Route path="/debug" element={<DebugSupabase />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>

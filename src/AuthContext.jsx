@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [friendsFavs, setFriendsFavs] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Move function declarations here to avoid accessing them before declaration
+  // Fetch friends' favorites to display on home page or elsewhere
   const fetchFriendsFavorites = useCallback(async (userId) => {
     try {
       const { data: links } = await supabase.from('friends').select('friend_id').eq('user_id', userId);
@@ -32,25 +32,31 @@ export const AuthProvider = ({ children }) => {
         }
       });
       setFriendsFavs(map);
-    } catch { setFriendsFavs({}); }
+    } catch (err) { console.error("Error fetching friends favorites:", err); }
   }, []);
 
+  // Fetch all user data
   const fetchAllData = useCallback(async (userId) => {
     try {
-      const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      // 1. Profile
+      const { data: profileData } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
       if (profileData) setProfile(profileData);
 
-      const { data: favData } = await supabase.from('favorites').select('artist_id').eq('user_id', userId);
-      if (favData) setFavorites(favData.map(f => f.artist_id));
+      // 2. Favorites
+      const { data: favs } = await supabase.from('favorites').select('artist_id').eq('user_id', userId);
+      if (favs) setFavorites(favs.map(f => f.artist_id));
 
+      // 3. Listened Albums
       const { data: listenedData } = await supabase.from('listened_albums').select('album_title').eq('user_id', userId);
       if (listenedData) setListened(listenedData.map(l => l.album_title));
 
+      // 4. Reviews
       const { data: reviewsData } = await supabase.from('reviews').select('*').eq('user_id', userId);
       if (reviewsData) setReviews(reviewsData);
 
+      // 5. Friends Data
       await fetchFriendsFavorites(userId);
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Error fetching all data:", err); }
   }, [fetchFriendsFavorites]);
 
   useEffect(() => {
@@ -58,6 +64,7 @@ export const AuthProvider = ({ children }) => {
 
     const loadData = async (session) => {
       if (session?.user) {
+        console.log("%c*** LOGIN SUCCESS - USER ID: " + session.user.id + " ***", "color: green; font-weight: bold; font-size: 16px;");
         setUser(session.user);
         await fetchAllData(session.user.id);
       } else {
@@ -81,7 +88,7 @@ export const AuthProvider = ({ children }) => {
 
     const timer = setTimeout(() => {
       if (mounted) {
-        console.warn("Délai dépassé.");
+        // console.warn("Délai dépassé."); // Optional warning
         setLoading(false);
       }
     }, 3000);
@@ -92,8 +99,6 @@ export const AuthProvider = ({ children }) => {
       authListener?.subscription?.unsubscribe();
     };
   }, [fetchAllData]);
-
-
 
   // --- ACTIONS ---
   const login = async (email, password) => {
@@ -152,24 +157,19 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => { await supabase.auth.signOut(); };
 
-  // --- MISE À JOUR PROFIL CORRIGÉE ---
   const updateUser = async (updates) => {
     if (!user) return;
 
-    // 1. Tenter la mise à jour dans Supabase
     const { error } = await supabase
       .from('profiles')
       .update(updates)
       .eq('id', user.id);
 
     if (error) {
-      // SI ERREUR : On affiche l'alerte
       console.error("ERREUR UPDATE PROFIL :", error.message);
       alert("Erreur de sauvegarde : " + error.message);
     } else {
-      // SI SUCCÈS : On met à jour l'affichage local
       setProfile(prev => ({ ...prev, ...updates }));
-      // On met aussi à jour l'objet user pour la navbar
       setUser(prev => ({ ...prev, ...updates }));
     }
   };
@@ -231,14 +231,39 @@ export const AuthProvider = ({ children }) => {
 
   const addFriend = async (friendUsername) => {
     if (!user) return { success: false, message: "Non connecté" };
-    const { data: friend } = await supabase.from('profiles').select('id, username').ilike('username', friendUsername).single();
+    const cleanUsername = friendUsername.trim();
+
+    // --- DEBUG: Voir qui est visible ---
+    const { data: debugProfiles } = await supabase.from('profiles').select('username');
+    console.log("DEBUG - Profils visibles dans Supabase:", debugProfiles);
+    // -----------------------------------
+
+    // Utiliser maybeSingle pour éviter l'erreur 406 si introuvable
+    const { data: friend, error } = await supabase
+      .from('profiles')
+      .select('id, username')
+      .ilike('username', cleanUsername)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Erreur recherche ami:", error);
+      return { success: false, message: "Erreur technique" };
+    }
     if (!friend) return { success: false, message: "Introuvable" };
     if (friend.id === user.id) return { success: false, message: "Impossible" };
 
-    const { data: existing } = await supabase.from('friends').select('*').eq('user_id', user.id).eq('friend_id', friend.id).single();
+    const { data: existing } = await supabase.from('friends').select('*').eq('user_id', user.id).eq('friend_id', friend.id).maybeSingle();
     if (existing) return { success: false, message: "Déjà ami" };
 
-    await supabase.from('friends').insert([{ user_id: user.id, friend_id: friend.id }]);
+    const { error: insertError } = await supabase.from('friends').insert([{ user_id: user.id, friend_id: friend.id }]);
+
+    if (insertError) {
+      console.error("Erreur ajout ami (DETAILS):", insertError);
+      console.error("Message:", insertError.message);
+      console.error("Details:", insertError.details);
+      console.error("Hint:", insertError.hint);
+      return { success: false, message: "Erreur technique: " + insertError.message };
+    }
     await fetchFriendsFavorites(user.id);
     return { success: true, message: `Ami ajouté: ${friend.username}` };
   };
@@ -265,10 +290,37 @@ export const AuthProvider = ({ children }) => {
     };
   };
 
+  const getPendingRequests = async () => {
+    if (!user) return [];
+    console.log("DEBUG - getPendingRequests start for user:", user.id);
+
+    // 1. Who added me? (I am the friend)
+    const { data: requests, error } = await supabase.from('friends').select('user_id').eq('friend_id', user.id);
+    console.log("DEBUG - Requests found (Who added me):", requests, "Error:", error);
+
+    if (!requests?.length) return [];
+
+    // 2. Who did I add? (I am the user)
+    const { data: myFriends } = await supabase.from('friends').select('friend_id').eq('user_id', user.id);
+    const myFriendIds = myFriends?.map(f => f.friend_id) || [];
+    console.log("DEBUG - My friends (Who I added):", myFriendIds);
+
+    // 3. Filter: Keep only those I haven't added back
+    const pendingUserIds = requests.map(r => r.user_id).filter(id => !myFriendIds.includes(id));
+    console.log("DEBUG - Pending User IDs after filter:", pendingUserIds);
+
+    if (!pendingUserIds.length) return [];
+
+    // 4. Get their profiles
+    const { data: profiles } = await supabase.from('profiles').select('*').in('id', pendingUserIds);
+    console.log("DEBUG - Pending Profiles:", profiles);
+    return profiles || [];
+  };
+
   const fullUser = user ? { ...user, ...profile, favorites, listened, reviews } : null;
 
   return (
-    <AuthContext.Provider value={{ user: fullUser, login, register, logout, toggleFavorite, updateUser, addFriend, getFriendsDetails, friendsFavs, loading, toggleListened, addReview, getFriendProfile }}>
+    <AuthContext.Provider value={{ user: fullUser, login, register, logout, toggleFavorite, updateUser, addFriend, getFriendsDetails, friendsFavs, loading, toggleListened, addReview, getFriendProfile, getPendingRequests }}>
       {!loading && children}
     </AuthContext.Provider>
   );

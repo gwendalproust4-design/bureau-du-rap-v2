@@ -5,13 +5,14 @@ import { dataRappeurs } from './data';
 import GlareHover from './components/GlareHover';
 
 export default function Profile() {
-  const { user, logout, updateUser, addFriend, getFriendsDetails } = useAuth();
+  const { user, logout, updateUser, addFriend, getFriendsDetails, getPendingRequests } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   const [friendInput, setFriendInput] = useState("");
   const [friendMessage, setFriendMessage] = useState("");
   const [myFriendsList, setMyFriendsList] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
   const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
@@ -19,10 +20,12 @@ export default function Profile() {
       if (user) {
         const friends = await getFriendsDetails();
         setMyFriendsList(friends);
+        const pending = await getPendingRequests();
+        setPendingRequests(pending);
       }
     };
     loadFriends();
-  }, [user, getFriendsDetails]);
+  }, [user, getFriendsDetails, getPendingRequests]);
 
   if (!user) { navigate('/login'); return null; }
 
@@ -43,8 +46,24 @@ export default function Profile() {
     e.preventDefault();
     const res = await addFriend(friendInput);
     setFriendMessage(res.message);
-    if (res.success) { setFriendInput(""); const friends = await getFriendsDetails(); setMyFriendsList(friends); }
+    if (res.success) {
+      setFriendInput("");
+      const friends = await getFriendsDetails();
+      setMyFriendsList(friends);
+      const pending = await getPendingRequests();
+      setPendingRequests(pending);
+    }
     setTimeout(() => setFriendMessage(""), 3000);
+  };
+
+  const handleAccept = async (username) => {
+    const res = await addFriend(username);
+    if (res.success) {
+      const friends = await getFriendsDetails();
+      setMyFriendsList(friends);
+      const pending = await getPendingRequests();
+      setPendingRequests(pending);
+    }
   };
 
   return (
@@ -66,6 +85,23 @@ export default function Profile() {
       </div>
 
       <div style={{ marginBottom: '60px' }}>
+        <div style={{ marginBottom: '40px', background: 'rgba(138, 43, 226, 0.1)', padding: '20px', borderRadius: '15px', border: '1px solid #8A2BE2' }}>
+          <h2 style={{ color: '#8A2BE2', borderBottom: '1px solid #8A2BE2', paddingBottom: '10px', marginTop: 0 }}>DEMANDES D'AMIS <span style={{ color: 'white' }}>({pendingRequests.length})</span></h2>
+          {pendingRequests.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', marginTop: '20px' }}>
+              {pendingRequests.map(req => (
+                <div key={req.id} style={{ background: '#1a1a1a', borderRadius: '10px', padding: '15px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <img src={req.avatar_url} alt={req.username} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', marginBottom: '10px' }} />
+                  <h3 style={{ color: 'white', margin: '0 0 10px', fontSize: '1rem' }}>{req.username}</h3>
+                  <button onClick={() => handleAccept(req.username)} style={{ background: '#4caf50', color: 'white', border: 'none', borderRadius: '20px', padding: '5px 15px', cursor: 'pointer', fontWeight: 'bold' }}>ACCEPTER</button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: '#ccc', fontStyle: 'italic', marginTop: '10px' }}>Aucune demande d'ami en attente.</p>
+          )}
+        </div>
+
         <h2 style={{ color: 'white', borderBottom: '1px solid #333', paddingBottom: '10px' }}>MES AMIS <span style={{ color: '#8A2BE2' }}>({myFriendsList.length})</span></h2>
         <form onSubmit={handleAddFriend} style={{ marginTop: '20px', display: 'flex', gap: '10px', maxWidth: '500px' }}>
           <input type="text" placeholder="Pseudo de l'ami..." value={friendInput} onChange={(e) => setFriendInput(e.target.value)} className="login-input" style={{ padding: '12px 20px', borderRadius: '30px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', flex: 1 }} />
