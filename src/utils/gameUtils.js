@@ -1,8 +1,7 @@
-import { dataRappeurs } from '../data';
 import { supabase } from '../supabaseClient';
 
 // Helper to get all albums from all rappers
-const getAllAlbums = (favoritesIds = null) => {
+const getAllAlbums = (favoritesIds = null, dataRappeurs = []) => {
     return dataRappeurs.flatMap(rapper => {
         // If favorites filter is active, skip rappers not in favorites
         if (favoritesIds && !favoritesIds.includes(rapper.id)) return [];
@@ -17,7 +16,7 @@ const getAllAlbums = (favoritesIds = null) => {
 };
 
 // Helper to get all singles from all rappers
-const getAllSingles = (favoritesIds = null) => {
+const getAllSingles = (favoritesIds = null, dataRappeurs = []) => {
     return dataRappeurs.flatMap(rapper => {
         // If favorites filter is active, skip rappers not in favorites
         if (favoritesIds && !favoritesIds.includes(rapper.id)) return [];
@@ -32,7 +31,7 @@ const getAllSingles = (favoritesIds = null) => {
 };
 
 // Helper to get all rappers, optionally filtered by sub-category or favorites
-const getAllRappers = (subCategory = null, favoritesIds = null) => {
+const getAllRappers = (subCategory = null, favoritesIds = null, dataRappeurs = []) => {
     let rappers = dataRappeurs;
 
     // Filter by favorites if provided
@@ -62,7 +61,7 @@ const shuffleArray = (array) => {
     return newArray;
 };
 
-export const generateGamePool = (category = 'rapper', subCategory = null, size = 16, favoritesIds = null) => {
+export const generateGamePool = (category = 'rapper', subCategory = null, size = 16, favoritesIds = null, dataRappeurs = []) => {
     let fullPool = [];
 
     // If subCategory is 'favorites', we use the favoritesIds
@@ -73,14 +72,14 @@ export const generateGamePool = (category = 'rapper', subCategory = null, size =
 
     switch (category) {
         case 'album':
-            fullPool = getAllAlbums(effectiveFavorites);
+            fullPool = getAllAlbums(effectiveFavorites, dataRappeurs);
             break;
         case 'single':
-            fullPool = getAllSingles(effectiveFavorites);
+            fullPool = getAllSingles(effectiveFavorites, dataRappeurs);
             break;
         case 'rapper':
         default:
-            fullPool = getAllRappers(isFavoritesMode ? null : subCategory, effectiveFavorites);
+            fullPool = getAllRappers(isFavoritesMode ? null : subCategory, effectiveFavorites, dataRappeurs);
             break;
     }
 

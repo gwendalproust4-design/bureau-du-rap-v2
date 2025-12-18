@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { dataRappeurs } from './data';
 import { useAuth } from './useAuth';
+import { useRappers } from './RappersContext';
 
 export default function ArtisteDetail() {
   const { id } = useParams();
@@ -11,9 +11,12 @@ export default function ArtisteDetail() {
   // Local state for review form
   const [reviewForm, setReviewForm] = useState({ albumTitle: '', rating: 5, comment: '' });
 
-  const rappeur = dataRappeurs.find(r => r.id === id);
+  const { allRappers, loading } = useRappers();
+  const rappeur = allRappers.find(r => r.id === id);
   const { user, toggleFavorite, listened = [], reviews = [], toggleListened, addReview } = useAuth() || {};
   const isFavorite = user?.favorites?.includes(id);
+
+  if (loading) return <div className="text-white text-center mt-20">Chargement...</div>;
 
   const handleImageError = (e) => {
     e.target.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(`
@@ -42,7 +45,7 @@ export default function ArtisteDetail() {
       const title = match[1];
       const featName = match[2];
       const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const featArtist = dataRappeurs.find(r =>
+      const featArtist = allRappers.find(r =>
         normalize(r.nom) === normalize(featName) ||
         r.id === normalize(featName).replace(/\s+/g, '_')
       );

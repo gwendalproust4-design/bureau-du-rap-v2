@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getLeaderboard } from '../utils/gameUtils';
 import { useTheme } from '../ThemeContext';
-import { dataRappeurs } from '../data';
+import { useRappers } from '../RappersContext';
 
 export default function Leaderboard() {
     const [category, setCategory] = useState('rapper');
@@ -9,10 +9,13 @@ export default function Leaderboard() {
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
     const { theme } = useTheme();
+    const { allRappers, loading: rappersLoading } = useRappers();
 
     useEffect(() => {
-        fetchAndMergeRankings();
-    }, [category]);
+        if (!rappersLoading) {
+            fetchAndMergeRankings();
+        }
+    }, [category, rappersLoading, allRappers]);
 
     const fetchAndMergeRankings = async () => {
         setLoading(true);
@@ -24,7 +27,7 @@ export default function Leaderboard() {
             // 2. Get all possible items from local data
             let allItems = [];
             if (category === 'rapper') {
-                allItems = dataRappeurs.map(r => ({
+                allItems = allRappers.map(r => ({
                     id: r.id,
                     name: r.nom,
                     image: r.image,
@@ -33,7 +36,7 @@ export default function Leaderboard() {
                 }));
             } else {
                 // Flatten albums/singles
-                dataRappeurs.forEach(r => {
+                allRappers.forEach(r => {
                     if (r.albums) {
                         r.albums.forEach(a => {
                             if ((category === 'album' && a.category === 'project') ||

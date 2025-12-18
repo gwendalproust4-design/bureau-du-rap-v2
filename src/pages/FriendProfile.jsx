@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../useAuth';
-import { dataRappeurs } from '../data';
+import { useRappers } from '../RappersContext';
 
 export default function FriendProfile() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { getFriendProfile } = useAuth() || {};
+    const { allRappers } = useRappers();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -25,7 +26,7 @@ export default function FriendProfile() {
     if (!profile) return <div style={{ color: 'white', padding: '20px' }}>Profil introuvable.</div>;
 
     // Enrichir les favoris avec les données de dataRappeurs
-    const favoriteArtists = profile.favorites.map(favId => dataRappeurs.find(r => r.id === favId)).filter(Boolean);
+    const favoriteArtists = profile.favorites.map(favId => allRappers.find(r => r.id === favId)).filter(Boolean);
 
     return (
         <div className="container" style={{ paddingTop: '100px', minHeight: '100vh' }}>

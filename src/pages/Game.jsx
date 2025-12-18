@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { generateGamePool, createPairsFromPool, recordVote, getVoteStats } from '../utils/gameUtils';
 import { useTheme } from '../ThemeContext';
 import { useAuth } from '../useAuth';
+import { useRappers } from '../RappersContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function Game() {
   // Global State
   const { theme } = useTheme();
   const { user } = useAuth() || {};
+  const { allRappers, loading: rappersLoading } = useRappers();
   const navigate = useNavigate();
 
   // Game Configuration State
@@ -43,10 +45,10 @@ export default function Game() {
   // --- Logic ---
 
   const startTournament = () => {
+    if (rappersLoading) return;
     setLoading(true);
     // 1. Generate initial pool
-    // 1. Generate initial pool
-    const pool = generateGamePool(category, subCategory, tournamentSize, user?.favorites);
+    const pool = generateGamePool(category, subCategory, tournamentSize, user?.favorites, allRappers);
 
     // 2. Create first round matches
     const matches = createPairsFromPool(pool);

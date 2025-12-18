@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import ArtistCard from "../components/ArtistCard";
 import { useAuth } from "../useAuth";
-import { dataRappeurs } from "../data";
+import { useRappers } from "../RappersContext";
 
 const Home = ({ searchTerm }) => {
   const { user, toggleFavorite, friendsFavs = {} } = useAuth() || {};
+  const { allRappers, loading } = useRappers();
   const [selectedStatus, setSelectedStatus] = useState("all");
 
-  const filteredRappeurs = dataRappeurs.filter(rappeur => {
+  if (loading) return <div className="text-white text-center mt-20">Chargement des artistes...</div>;
+
+  const filteredRappeurs = allRappers.filter(rappeur => {
     const matchSearch = rappeur.nom.toLowerCase().includes(searchTerm.toLowerCase());
     let matchStatus = true;
     if (selectedStatus === "favorites") {

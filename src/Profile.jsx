@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
-import { dataRappeurs } from './data';
+import { useRappers } from './RappersContext';
 import GlareHover from './components/GlareHover';
 
 export default function Profile() {
   const { user, logout, updateUser, addFriend, getFriendsDetails, getPendingRequests } = useAuth();
+  const { allRappers } = useRappers();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -29,7 +30,7 @@ export default function Profile() {
 
   if (!user) { navigate('/login'); return null; }
 
-  const favoriteArtists = dataRappeurs.filter(r => user.favorites?.includes(r.id));
+  const favoriteArtists = allRappers.filter(r => user.favorites?.includes(r.id));
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

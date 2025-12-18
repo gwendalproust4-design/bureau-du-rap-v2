@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import { ThemeProvider } from './ThemeContext';
+import { RappersProvider } from './RappersContext';
 import Home from './pages/Home';
 import ArtisteDetail from './ArtisteDetail';
 import Login from './Login';
@@ -22,34 +23,36 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Spotlight />
-        <HashRouter>
-          <ClickSpark
-            sparkColor='#333333'
-            sparkSize={10}
-            sparkRadius={15}
-            sparkCount={8}
-            duration={400}
-          >
-            <div className="app-wrapper">
-              <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-              <div className="main-content">
-                <Routes>
-                  <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/profil" element={<Profile />} />
-                  <Route path="/profile/:id" element={<FriendProfile />} />
-                  <Route path="/artiste/:id" element={<ArtisteDetail />} />
-                  <Route path="/game" element={<Game />} />
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  <Route path="/debug" element={<DebugSupabase />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+        <RappersProvider>
+          <Spotlight />
+          <HashRouter>
+            <ClickSpark
+              sparkColor='#333333'
+              sparkSize={10}
+              sparkRadius={15}
+              sparkCount={8}
+              duration={400}
+            >
+              <div className="app-wrapper">
+                <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                <div className="main-content">
+                  <Routes>
+                    <Route path="/" element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/profil" element={<Profile />} />
+                    <Route path="/profile/:id" element={<FriendProfile />} />
+                    <Route path="/artiste/:id" element={<ArtisteDetail />} />
+                    <Route path="/game" element={<Game />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/debug" element={<DebugSupabase />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          </ClickSpark>
-        </HashRouter>
+            </ClickSpark>
+          </HashRouter>
+        </RappersProvider>
       </AuthProvider>
     </ThemeProvider>
   );
